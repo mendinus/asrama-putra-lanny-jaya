@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kegiatan - Asrama Putra Lanny Jaya</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">Asrama Putra Lanny Jaya</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="kegiatan.html">Kegiatan</a></li>
+                <li><a href="admin/login.html">Login Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h2>Daftar Kegiatan</h2>
+        <div id="kegiatan-list" class="kegiatan-grid">
+            <!-- Kegiatan akan dimuat dari API -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Asrama Putra Lanny Jaya. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Load kegiatan dari API
+        async function loadKegiatan() {
+            try {
+                const response = await fetch('http://localhost:5000/api/kegiatan');
+                const data = await response.json();
+                displayKegiatan(data);
+            } catch (error) {
+                console.error('Error loading kegiatan:', error);
+            }
+        }
+
+        function displayKegiatan(kegiatan) {
+            const list = document.getElementById('kegiatan-list');
+            list.innerHTML = kegiatan.map(k => `
+                <div class="kegiatan-card">
+                    <h3>${k.judul}</h3>
+                    <p>${k.deskripsi}</p>
+                    <a href="detail-kegiatan.html?id=${k.id}">Lihat Detail</a>
+                </div>
+            `).join('');
+        }
+
+        loadKegiatan();
+    </script>
+</body>
+</html>

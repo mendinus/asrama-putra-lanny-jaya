@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Asrama Putra Lanny Jaya</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">Admin Dashboard</h1>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="#">Keluar</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h2>Dashboard Admin</h2>
+        <div class="admin-menu">
+            <a href="tambah-kegiatan.html" class="btn">Tambah Kegiatan</a>
+        </div>
+
+        <h3>Daftar Kegiatan</h3>
+        <table id="kegiatan-table" class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Judul</th>
+                    <th>Tanggal</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data akan dimuat dari API -->
+            </tbody>
+        </table>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Asrama Putra Lanny Jaya. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Check token
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        // Load kegiatan
+        async function loadKegiatan() {
+            try {
+                const response = await fetch('http://localhost:5000/api/kegiatan', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                displayKegiatan(data);
+            } catch (error) {
+                console.error('Error loading kegiatan:', error);
+            }
+        }
+
+        function displayKegiatan(kegiatan) {
+            const tbody = document.querySelector('#kegiatan-table tbody');
+            tbody.innerHTML = kegiatan.map(k => `
+                <tr>
+                    <td>${k.id}</td>
+                    <td>${k.judul}</td>
+                    <td>${k.tanggal}</td>
+                    <td>
+                        <a href="edit-kegiatan.html?id=${k.id}">Edit</a>
+                        <button onclick="deleteKegiatan(${k.id})">Hapus</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deleteKegiatan(id) {
+            if (confirm('Hapus kegiatan ini?')) {
+                try {
+                    await fetch(`http://localhost:5000/api/kegiatan/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    loadKegiatan();
+                } catch (error) {
+                    console.error('Error deleting kegiatan:', error);
+                }
+            }
+        }
+
+        loadKegiatan();
+    </script>
+</body>
+</html>

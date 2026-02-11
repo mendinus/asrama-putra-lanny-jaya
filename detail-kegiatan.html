@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Kegiatan - Asrama Putra Lanny Jaya</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">Asrama Putra Lanny Jaya</h1>
+            <ul class="nav-menu">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="kegiatan.html">Kegiatan</a></li>
+                <li><a href="admin/login.html">Login Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div id="kegiatan-detail">
+            <!-- Detail kegiatan akan dimuat dari API -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Asrama Putra Lanny Jaya. All rights reserved.</p>
+    </footer>
+
+    <script>
+        async function loadKegiatanDetail() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            try {
+                const response = await fetch(`http://localhost:5000/api/kegiatan/${id}`);
+                const kegiatan = await response.json();
+                displayDetail(kegiatan);
+            } catch (error) {
+                console.error('Error loading kegiatan detail:', error);
+            }
+        }
+
+        function displayDetail(kegiatan) {
+            const detail = document.getElementById('kegiatan-detail');
+            detail.innerHTML = `
+                <h2>${kegiatan.judul}</h2>
+                <p><strong>Tanggal:</strong> ${kegiatan.tanggal}</p>
+                <p><strong>Tempat:</strong> ${kegiatan.tempat}</p>
+                <p>${kegiatan.deskripsi}</p>
+                <a href="kegiatan.html">Kembali</a>
+            `;
+        }
+
+        loadKegiatanDetail();
+    </script>
+</body>
+</html>
